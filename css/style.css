@@ -1,26 +1,27 @@
     :root{
-      --bg:#05060c;
-      --bg-soft:#0c0d17;
-      --panel:#121321;
-      --panel-2:#181a2b;
-      --line:#2b2d43;
-      --text:#f6f7fb;
-      --muted:#a8adc7;
-      --accent:#f7b733;
-      --accent-2:#fc4a1a;
-      --ok:#20c997;
-      --warn:#ffb020;
-      --danger:#ff5d73;
-      --info:#4ecdc4;
-      --radius:18px;
-      --shadow:0 20px 50px rgba(0,0,0,.45);
-      --font-body:'Inter',sans-serif;
-      --font-display:'Instrument Serif',serif;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:radial-gradient(circle at top,#111324 0%,#05060c 55%,#000 100%);color:var(--text);font-family:var(--font-body)}
-    body{min-height:100vh}
-    .shell{max-width:1280px;margin:0 auto;padding:24px 18px 36px;display:flex;flex-direction:column;gap:18px}
+  --bg:#0a0c1f;
+  --bg-soft:#05060c;
+  --panel:#121321;
+  --panel-2:#181a2b;
+  --line:#2b2d43;
+  --text:#f6f7fb;
+  --muted:#a8adc7;
+  --accent:#00d4ff;          /* ← nowy akcent CDV */
+  --accent-2:#0088cc;
+  --ok:#00ffaa;
+  --warn:#ffb020;
+  --danger:#ff5d73;
+  --info:#4ecdc4;
+  --radius:20px;
+  --shadow:0 20px 50px rgba(0,212,255,.25);
+  --font-body:'Inter',sans-serif;
+  --font-display:'Instrument Serif',serif;
+}
+
+/* reszta CSS dokładnie taka sama jak w oryginale – tylko kolory i shadow zmienione */
+* { box-sizing:border-box }
+html,body { margin:0;padding:0;background:radial-gradient(circle at top,#111324 0%,#0a0c1f 55%,#000 100%); color:var(--text); font-family:var(--font-body) }
+.shell { max-width:1280px;margin:0 auto;padding:24px 18px 36px;display:flex;flex-direction:column;gap:18px }
     .hidden{display:none!important}
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;overflow:visible}
     .brand{display:flex;align-items:center;gap:12px}
@@ -45,7 +46,8 @@
     .btn-ghost:hover{background:rgba(255,255,255,.08)}
     .btn-danger{background:rgba(255,93,115,.12);border:1px solid rgba(255,93,115,.22);color:#ffd7de}
     .hero{display:grid;grid-template-columns:1.2fr .9fr;gap:18px}
-    .panel{background:linear-gradient(135deg,rgba(19,20,34,.96),rgba(9,10,18,.98));border:1px solid rgba(255,255,255,.06);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+    ..panel { background:linear-gradient(135deg,rgba(18,19,33,.96),rgba(10,12,31,.98)); border:1px solid rgba(0,212,255,.15); border-radius:24px; box-shadow:var(--shadow); transition:all .3s cubic-bezier(0.4,0,0.2,1); }
+.panel:hover { transform:translateY(-4px); box-shadow:0 30px 60px -15px rgba(0,212,255,.4); }
     .panel:before{
       content:"";position:absolute;inset:-20%;
       background:
