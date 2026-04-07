@@ -1,26 +1,40 @@
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-analytics.js";
 import {
-  getAuth, onAuthStateChanged, signInWithEmailAndPassword,
-  createUserWithEmailAndPassword, signOut, sendEmailVerification
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 import {
-  getDatabase, ref, onValue, set, serverTimestamp
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
 
+// Your web app's Firebase configuration (NOWA BAZA)
 const firebaseConfig = {
-  apiKey: "AIzaSyC1yUVD47m16FFRGh6LEpWpVZkAHHuiTXU",
-  authDomain: "szaferpage.firebaseapp.com",
-  databaseURL: "https://szaferpage-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "szaferpage",
-  storageBucket: "szaferpage.firebasestorage.app",
-  messagingSenderId: "240077599565",
-  appId: "1:240077599565:web:01deea4f5908bc9f01bd04"
+  apiKey: "AIzaSyCuCXGLol577LdJBFzkNWky27eDJdaBF0w",
+  authDomain: "panel-helpdesk-ed3f1.firebaseapp.com",
+  databaseURL: "https://panel-helpdesk-ed3f1-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "panel-helpdesk-ed3f1",
+  storageBucket: "panel-helpdesk-ed3f1.firebasestorage.app",
+  messagingSenderId: "384650483840",
+  appId: "1:384650483840:web:7a8db9ea172423046aee65",
+  measurementId: "G-4CH63EKLVH"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getDatabase(app);
-const sharedRef = ref(db, "vinciDesk/shared");
+const sharedRef = ref(db, "helpdesk/shared");   // ścieżka w nowej bazie
 
 const $ = id => document.getElementById(id);
 
@@ -102,13 +116,6 @@ function renderTickets() {
   `).join('');
 }
 
-function renderAll() {
-  renderTickets();
-  renderCalendar();
-  renderUpcoming();
-  renderMetrics();
-}
-
 function renderMetrics() {
   const open = state.tickets.filter(t => !["Rozwiązany","Zamknięty"].includes(t.status)).length;
   els.metricOpenTickets.textContent = open;
@@ -116,7 +123,56 @@ function renderMetrics() {
   els.metricResolvedToday.textContent = state.goals.resolvedToday || "14";
 }
 
-// Reszta logiki (auth, calendar, tasks, push notifications, modale, harmonogram dyżurów, chat, presence) jest identyczna jak w oryginale, tylko nazwy i dane zmienione na IT Helpdesk
+function renderAll() {
+  renderTickets();
+  renderMetrics();
+  // reszta renderów (kalendarz, upcoming, tasks) – możesz dodać później
+}
 
+// === AUTH & INIT ===
+function initAuth() {
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    if (user) {
+      els.authGate.classList.add("hidden");
+      els.authReady.classList.remove("hidden");
+      els.appShell.classList.remove("hidden");
+      renderAll();
+    } else {
+      els.authGate.classList.remove("hidden");
+      els.authReady.classList.add("hidden");
+      els.appShell.classList.add("hidden");
+    }
+  });
+}
+
+els.loginBtn.addEventListener("click", async () => {
+  const email = els.loginEmail.value.trim();
+  const password = els.loginPassword.value.trim();
+  if (!email || !password) return alert("Podaj email i hasło");
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (e) {
+    alert("Błąd logowania: " + e.message);
+  }
+});
+
+els.registerBtn.addEventListener("click", async () => {
+  const email = els.loginEmail.value.trim();
+  const password = els.loginPassword.value.trim();
+  if (!email || !password) return alert("Podaj email i hasło");
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await sendEmailVerification(cred.user);
+    alert("Konto utworzone! Link aktywacyjny wysłany na " + email);
+    await signOut(auth);
+  } catch (e) {
+    alert("Błąd rejestracji: " + e.message);
+  }
+});
+
+els.logoutBtn.addEventListener("click", () => signOut(auth));
+
+// Start
 initAuth();
 renderAll();
