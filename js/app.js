@@ -1,59 +1,52 @@
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-      signOut,
-      sendEmailVerification,
-      updatePassword,
-      updateProfile
-    } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-    import {
-      getDatabase,
-      ref,
-      onValue,
-      set,
-      onDisconnect,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+// === CDV IT HELPDESK PANEL – app.js (pełna logika z oryginału + Twoja baza) ===
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  sendEmailVerification,
+  updatePassword,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  onDisconnect,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyC1yUVD47m16FFRGh6LEpWpVZkAHHuiTXU",
-      authDomain: "szaferpage.firebaseapp.com",
-      databaseURL: "https://szaferpage-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "szaferpage",
-      storageBucket: "szaferpage.firebasestorage.app",
-      messagingSenderId: "240077599565",
-      appId: "1:240077599565:web:01deea4f5908bc9f01bd04",
-      measurementId: "G-YKQKZ84PNK"
-    };
+// TWOJA NOWA BAZA DANYCH (panel-helpdesk-ed3f1)
+const firebaseConfig = {
+  apiKey: "AIzaSyCuCXGLol577LdJBFzkNWky27eDJdaBF0w",
+  authDomain: "panel-helpdesk-ed3f1.firebaseapp.com",
+  databaseURL: "https://panel-helpdesk-ed3f1-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "panel-helpdesk-ed3f1",
+  storageBucket: "panel-helpdesk-ed3f1.firebasestorage.app",
+  messagingSenderId: "384650483840",
+  appId: "1:384650483840:web:7a8db9ea172423046aee65",
+  measurementId: "G-4CH63EKLVH"
+};
 
-    const PERSONS = ["Szafer", "blajetttp", "Skat"];
-    const EMAIL_TO_PERSON = {
-      "blajetttp@gmail.com": "blajetttp",
-      "szafer": "szafer",
-      "skat": "skat"
-    };
-    function resolvePersonFromEmail(email) {
-      if (!email) return '';
-      var e = email.toLowerCase().trim();
-      if (EMAIL_TO_PERSON[e]) return EMAIL_TO_PERSON[e];
-      for (var i = 0; i < PERSONS.length; i++) {
-        if (e.includes(PERSONS[i].toLowerCase())) return PERSONS[i].toLowerCase();
-      }
-      return e.split('@')[0];
-    }
-    var emailToPerson = resolvePersonFromEmail; // alias for backward compat
-    const TASK_STATUSES = ["Do zrobienia", "W toku", "Zrobione"];
-    const ITEM_TYPES = ["Klip", "Rolka", "Post", "Story", "Backstage", "Spotkanie", "Sesja w Studio", "Sesja Zdjęciowa/Filmowa"];
-    const ITEM_STATUSES = ["Plan", "W produkcji", "Gotowe", "Opublikowane"];
-    const STORAGE_KEY = "szafer_panel_backup_v3";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const sharedRef = ref(db, "cdvHelpdesk/shared");   // nowa ścieżka (możesz zmienić w Firebase)
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-    const sharedRef = ref(db, "szaferPanel/shared");
+const PERSONS = ["Admin CDV", "Tech1", "Tech2", "Support", "On-Call"];   // ← zmienione na zespół IT
+const EMAIL_TO_PERSON = {
+  "szymon.karaszewski@cdv.pl": "Admin CDV",
+  "kacper.kubiak@cdv.pl": "Admin CDV",
+};
+
+const TASK_STATUSES = ["Open", "In Progress", "Resolved", "Closed"];    
+const ITEM_TYPES = ["Incydent", "Request", "Zmiana", "Pytanie", "On-Call"]; 
+const ITEM_STATUSES = ["Open", "In Progress", "Resolved", "Closed"];
+const STORAGE_KEY = "cdv_helpdesk_backup_v1";
+
 
     const $ = (id) => document.getElementById(id);
 
