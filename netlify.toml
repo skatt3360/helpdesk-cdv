@@ -1,14 +1,14 @@
 [build]
   publish = "."
 
-# Service Worker musi być serwowany BEZ cache
+# Service Worker bez cache
 [[headers]]
   for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
     Service-Worker-Allowed = "/"
 
-# Statyczne zasoby — długi cache z hash busting
+# Długi cache dla zasobów statycznych
 [[headers]]
   for = "/css/*"
   [headers.values]
